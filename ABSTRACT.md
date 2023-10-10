@@ -1,5 +1,16 @@
+The **HIT-UAV** dataset consists of 2,898 infrared thermal images. These images were extracted from a larger pool of 43,470 frames sourced from numerous videos, all of which were publicly available and had undergone desensitization for privacy reasons. In order to enhance the dataset's utility for various tasks, the HIT-UAV10 dataset includes two types of annotated bounding boxes for each object within the images: oriented bounding boxes, designed to address the challenge of significant overlap between object instances in aerial images, and standard bounding boxes, aimed at facilitating efficient dataset utilization. This comprehensive dataset encompasses five distinct object categories: Person, Car, Bicycle, OtherVehicle, and DontCare, totaling 24,899 annotated objects. The DontCare category encompasses objects that proved difficult for annotators to categorize accurately, with additional details provided in the Methods section.
 
-Sample image template:
-<img src="https://github.com/dataset-ninja/gland-segmentation/assets/78355358/f158d0dd-71d5-41a2-aba5-4a5f57d54c35" alt="image" width="800">
+The dataset is composed of 2,029 training images, 579 test images, and 290 validation images. To evaluate the HIT-UAV10 dataset, the authors conducted training and testing using established object detection algorithms, specifically YOLOv422, YOLOv4-tiny, Faster R-CNN23, and SSD24. The results demonstrated that these algorithms exhibited outstanding performance on the HIT-UAV10 dataset in comparison to other visual light datasets. This suggests the significant potential of infrared thermal datasets in enhancing object detection applications in Unmanned Aerial Vehicles (UAVs). Furthermore, the authors conducted a performance analysis of YOLOv4 and YOLOv4-tiny at various altitudes and camera perspectives, yielding valuable insights to assist users in comprehending UAV-based object detection.
 
-<span style="font-size: smaller; font-style: italic;">Image description.</span>
+The authors opted for the DJI Matrice M210 V2 UAV platform for image acquisition, which comes with an approximate price tag of 10,000 US dollars. The configuration of the DJI Matrice M210 V2 used is elaborated upon in Table 3. To capture the images, the authors equipped the UAV with the DJI Zenmuse XT2 camera26. This camera boasts a FLIR longwave infrared thermal camera with a thermal infrared resolution of 640 × 512 pixels and a 25 mm lens. Additionally, it includes a visual camera capable of capturing 4K videos and 12MP photos. The cost associated with the DJI Zenmuse XT2 camera is approximately 8,000 US dollars.
+
+The dataset generation pipeline consists of four stages: video capture, frame extraction and data cleaning, object annotation, and dataset generation.
+
+Videos were recorded under diverse conditions, encompassing locations such as schools, parking lots, roads, playgrounds, and others. The flight altitude spanned from 60 to 130 meters, and the camera perspective ranged from 30 to 90 degrees. Flights were conducted during both daylight and nighttime settings. For each video, essential information, including flight altitude, camera perspective, flight date, and daylight intensity, was meticulously recorded.
+
+The image files are systematically named following this format: T_HH(H)_AA_W_NNNNN. Here, T signifies the shooting time (0 for day and 1 for night), HH(H) indicates the flight altitude (which varies from 60 to 130 meters), AA represents the camera perspective (ranging from 30 to 90 degrees), W denotes the prevailing weather condition (with only images taken under non-rainy conditions being included in the dataset), and NNNNN signifies the unique serial number assigned to each image.
+
+
+
+
+
