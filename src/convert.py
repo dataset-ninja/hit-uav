@@ -10,6 +10,7 @@ from glob import glob
 
 from tqdm import tqdm
 
+
 def download_dataset(teamfiles_dir: str) -> str:
     """Use it for large datasets to convert them on the instance"""
     api = sly.Api.from_env()
@@ -31,7 +32,7 @@ def download_dataset(teamfiles_dir: str) -> str:
             total=fsize,
             unit="B",
             unit_scale=True,
-        ) as pbar:        
+        ) as pbar:
             api.file.download(team_id, teamfiles_path, local_path, progress_cb=pbar)
         dataset_path = unpack_if_archive(local_path)
 
@@ -59,7 +60,8 @@ def download_dataset(teamfiles_dir: str) -> str:
 
         dataset_path = storage_dir
     return dataset_path
-    
+
+
 def count_files(path, extension):
     count = 0
     for root, dirs, files in os.walk(path):
@@ -68,28 +70,40 @@ def count_files(path, extension):
                 count += 1
     return count
 
+
 def create_ann(image_path):
     filename = sly.fs.get_file_name_with_ext(image_path)
     labels = []
 
-    height, width, tag_value = img_info_dict.get(filename)
+    height, width, date_captured = img_info_dict.get(filename)
     if filename in ann_dict:
         for bbox in ann_dict.get(filename):
             class_id = bbox[1]
             obj_class = classes_dict.get(int(class_id))
             xc, yc, w, h = bbox[0]
-            xmin = xc - (w * 0.5)
-            ymin = yc - (h * 0.5)
-            xmax = xmin + w
-            ymax = ymin + h
-            rectangle = sly.Rectangle(ymin, xmin, ymax, xmax)
+            x1 = xc
+            y1 = yc
+            x2 = x1 + w
+            y2 = y1 + h
+            rectangle = sly.Rectangle(top=y1, left=x1, bottom=y2, right=x2)
             label = sly.Label(rectangle, obj_class)
             labels.append(label)
 
-    img_tag = sly.Tag(tm_dc, tag_value)
+    filename_split = filename.split("_")
+    img_tag_dc = sly.Tag(
+        tm_dc,
+        value=(date_captured[0:4] + "/" + date_captured[5:6] + "/" + date_captured[7:8]),
+    )
+    img_tag_st = shooting_time.get(int(filename_split[0]))
+    img_tag_fa = sly.Tag(tm_fa, int(filename_split[1]))
+    img_tag_cp = sly.Tag(tm_cp, int(filename_split[2]))
 
-    return sly.Annotation(img_size=(height, width), labels=labels, img_tags=[img_tag])
-tm_dc = sly.TagMeta("date captured", value_type=sly.TagValueType.ANY_STRING)
+    return sly.Annotation(
+        img_size=(height, width),
+        labels=labels,
+        img_tags=[img_tag_dc, img_tag_st, img_tag_fa, img_tag_cp],
+    )
+
 
 dataset_path = "/mnt/c/users/german/documents/hit-uav/normal_json"
 ann_path = dataset_path + "/annotations"
@@ -109,21 +123,33 @@ for ann_file in anns_paths:
         if ann_path["image_id"] not in ann_id_dict:
             ann_id_dict[ann_path["image_id"]] = []
         ann_id_dict[ann_path["image_id"]].append((ann_path["bbox"], ann_path["category_id"]))
-        
+
 ann_dict = {id_filename_dict.get(k): v for k, v in ann_id_dict.items()}
 
-classes_dict = {0: sly.ObjClass(name="person", geometry_type= sly.Rectangle,color=[0, 0, 255]),
-1: sly.ObjClass(name="car", geometry_type= sly.Rectangle,color=[255, 0, 255]),
-2: sly.ObjClass(name="bicycle", geometry_type= sly.Rectangle,color=[255, 0, 0]),
-3: sly.ObjClass(name="other vehicle", geometry_type= sly.Rectangle,color=[0, 255, 0]),
-4: sly.ObjClass(name="dontcare", geometry_type= sly.Rectangle,color=[0, 255, 255]),}
+tm_dc = sly.TagMeta("date captured", value_type=sly.TagValueType.ANY_STRING)
+tm_day = sly.TagMeta("day", sly.TagValueType.NONE)
+tm_night = sly.TagMeta("night", sly.TagValueType.NONE)
+tm_fa = sly.TagMeta("flight altitude", sly.TagValueType.ANY_NUMBER)
+tm_cp = sly.TagMeta("camera perspective", sly.TagValueType.ANY_NUMBER)
+
+shooting_time = {0: tm_day, 1: tm_night}
+
+classes_dict = {
+    0: sly.ObjClass(name="person", geometry_type=sly.Rectangle, color=[0, 0, 255]),
+    1: sly.ObjClass(name="car", geometry_type=sly.Rectangle, color=[255, 0, 255]),
+    2: sly.ObjClass(name="bicycle", geometry_type=sly.Rectangle, color=[255, 0, 0]),
+    3: sly.ObjClass(name="other vehicle", geometry_type=sly.Rectangle, color=[0, 255, 0]),
+    4: sly.ObjClass(name="dontcare", geometry_type=sly.Rectangle, color=[0, 255, 255]),
+}
 
 
 def convert_and_upload_supervisely_project(
     api: sly.Api, workspace_id: int, project_name: str
 ) -> sly.ProjectInfo:
     project = api.project.create(workspace_id, project_name)
-    meta = sly.ProjectMeta(obj_classes=list(classes_dict.values()), tag_metas=[tm_dc])
+    meta = sly.ProjectMeta(
+        obj_classes=list(classes_dict.values()), tag_metas=[tm_dc, tm_day, tm_night, tm_fa, tm_cp]
+    )
     api.project.update_meta(project.id, meta.to_json())
 
     dir_paths = ["test", "train", "val"]
@@ -143,5 +169,3 @@ def convert_and_upload_supervisely_project(
             anns = [create_ann(image_path) for image_path in img_pathes_batch]
             api.annotation.upload_anns(img_ids, anns)
     return project
-
-
