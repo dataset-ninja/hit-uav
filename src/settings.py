@@ -59,7 +59,7 @@ PAPER: Optional[Union[str, List[str], Dict[str, str]]] = "https://arxiv.org/abs/
 BLOGPOST: Optional[Union[str, List[str], Dict[str, str]]] = None
 REPOSITORY: Optional[
     Union[str, List[str], Dict[str, str]]
-] = "https://github.com/suojiashun/HIT-UAV-Infrared-Thermal-Dataset"
+] = {"GitHub":"https://github.com/suojiashun/HIT-UAV-Infrared-Thermal-Dataset"}
 
 CITATION_URL: Optional[str] = None
 AUTHORS: Optional[List[str]] = [
@@ -70,6 +70,7 @@ AUTHORS: Optional[List[str]] = [
     "Zhou, Wei",
     "Shi, Weisong",
 ]
+AUTHORS_CONTACTS: Optional[List[str]] = ["suojiashun@mail.ynu.edu.cn", "suojiashun@gmail.com"]
 
 ORGANIZATION_NAME: Optional[Union[str, List[str]]] = "Pegasus Project, China"
 ORGANIZATION_URL: Optional[Union[str, List[str]]] = "https://pegasus.ac.cn/"
@@ -123,6 +124,7 @@ def get_settings():
     settings["repository"] = REPOSITORY
     settings["citation_url"] = CITATION_URL
     settings["authors"] = AUTHORS
+    settings["authors_contacts"] = AUTHORS_CONTACTS
     settings["organization_name"] = ORGANIZATION_NAME
     settings["organization_url"] = ORGANIZATION_URL
     settings["slytagsplit"] = SLYTAGSPLIT
