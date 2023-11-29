@@ -1,6 +1,6 @@
 Dataset **HIT-UAV** can be downloaded in [Supervisely format](https://developer.supervisely.com/api-references/supervisely-annotation-json-format):
 
- [Download](https://assets.supervisely.com/supervisely-supervisely-assets-public/teams_storage/k/d/ru/0fXaeSmqq3nUNNXRaSj2aKGQSqrXIGKXiELxS2kOlF9MhGmKzlk1Nn0BNpNOBb6N2E0EiFAwD8g7wZ8WI5TgXUAqM7sDfZOEwAWcp6qLHYjT9bGqROHT1R0zOD29.tar)
+ [Download](https://www.dropbox.com/scl/fi/w5s1kbjpyakgic5gj95fn/hit-uav-DatasetNinja.tar?rlkey=2de59u2uq81ixdp8x9m6mp45y&dl=1)
 
 As an alternative, it can be downloaded with *dataset-tools* package:
 ``` bash
