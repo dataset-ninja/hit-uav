@@ -1,4 +1,4 @@
-**HIT-UAV: A High-altitude Infrared Thermal Dataset for Unmanned Aerial Vehicle-based Object Detection** is a dataset for an object detection task. It is used in the drone inspection domain. 
+**HIT-UAV: A High-Altitude Infrared Thermal Dataset for Unmanned Aerial Vehicle-Based Object Detection** is a dataset for an object detection task. It is used in the drone inspection domain. 
 
 The dataset consists of 2898 images with 24899 labeled objects belonging to 5 different classes including *person*, *car*, *bicycle*, and other: *other vehicle* and *dontcare*.
 
