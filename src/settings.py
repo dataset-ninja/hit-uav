@@ -14,7 +14,7 @@ from dataset_tools.templates import (
 # * Before uploading to instance #
 ##################################
 PROJECT_NAME: str = "HIT-UAV"
-PROJECT_NAME_FULL: str = "HIT-UAV: A High-altitude Infrared Thermal Dataset for Unmanned Aerial Vehicle-based Object Detection"
+PROJECT_NAME_FULL: str = "HIT-UAV: A High-Altitude Infrared Thermal Dataset for Unmanned Aerial Vehicle-Based Object Detection"
 HIDE_DATASET = False  # set False when 100% sure about repo quality
 
 ##################################
